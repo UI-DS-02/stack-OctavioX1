@@ -1,0 +1,7 @@
+C:\Users\OctavioX1\.GitHub Repo's\stack-OctavioX1\StackProject\StackProject\bin\Debug\StackProject.exe
+C:\Users\OctavioX1\.GitHub Repo's\stack-OctavioX1\StackProject\StackProject\bin\Debug\StackProject.pdb
+C:\Users\OctavioX1\.GitHub Repo's\stack-OctavioX1\StackProject\StackProject\obj\Debug\StackProject.csproj.AssemblyReference.cache
+C:\Users\OctavioX1\.GitHub Repo's\stack-OctavioX1\StackProject\StackProject\obj\Debug\StackProject.csproj.SuggestedBindingRedirects.cache
+C:\Users\OctavioX1\.GitHub Repo's\stack-OctavioX1\StackProject\StackProject\obj\Debug\StackProject.csproj.CoreCompileInputs.cache
+C:\Users\OctavioX1\.GitHub Repo's\stack-OctavioX1\StackProject\StackProject\obj\Debug\StackProject.exe
+C:\Users\OctavioX1\.GitHub Repo's\stack-OctavioX1\StackProject\StackProject\obj\Debug\StackProject.pdb
