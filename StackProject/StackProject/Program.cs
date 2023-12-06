@@ -11,8 +11,8 @@ namespace StackProject
         {
             UserInterface userInterface = new UserInterface();
             SolveEquation solveEquation = new SolveEquation();
-
-            solveEquation.solve("s(p)");
+            
+            userInterface.mainMenu();
         }
     }
 
@@ -28,13 +28,13 @@ namespace StackProject
             
             while (!exit)
             {
-                Console.WriteLine("Now, What Can I Do For You? \n1.Calculate\n2.Show History \n3.Exit (The Only Right Choice Here)");
+                Console.WriteLine("Now, What Can I Do For You? \n1.Calculate\n2.Exit (The Only Right Choice Here)");
 
-                int cmd = Console.Read();
+                string cmd = Console.ReadLine();
 
                 switch (cmd)
                 {
-                    case '1':
+                    case "1":
                     {
                         Console.WriteLine("Enter Equation\n");
 
@@ -46,13 +46,7 @@ namespace StackProject
 
                         break;
                     }
-                    case '2':
-                    {
-                        
-                        
-                        break;
-                    }
-                    case '3':
+                    case "2":
                     {
                         exit = true;
 
@@ -72,6 +66,7 @@ namespace StackProject
     
     public class SolveEquation
     {
+        private ArrayList history = new ArrayList();
         public void solve(string inFix)
         {
             Queue<string> queue = inFixToPostFix(inFix);
@@ -113,8 +108,9 @@ namespace StackProject
                     stack.push(current);
                 }
             }
-
-            Console.WriteLine(stack.Array[0]);
+            
+            history.Add(stack.Array[0]);
+            Console.WriteLine(stack.pop());
         }
         
         public Double singleOperator(char op , double num)
@@ -177,6 +173,8 @@ namespace StackProject
 
         public Queue<string> inFixToPostFix(string inFix)
         {
+            history.Add(inFix);
+            
             string currentNum = "";
             Stack<char> operators = new Stack<char>();
             List<string> list = new List<string>();
