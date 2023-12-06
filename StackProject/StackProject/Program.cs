@@ -12,7 +12,7 @@ namespace StackProject
             UserInterface userInterface = new UserInterface();
             SolveEquation solveEquation = new SolveEquation();
 
-            solveEquation.inFixToPostFix("(2.1+5)+3^356.54+4-(52*3^((3+2)))+s(33)");
+            solveEquation.solve("s(p)");
         }
     }
 
@@ -28,8 +28,7 @@ namespace StackProject
             
             while (!exit)
             {
-                Console.WriteLine("Now, What Can I Do For You? \n1.Calculate \n2.Create New Operator" +
-                                  "\n3.Show History \n4.Draw A Graph \n5.Exit (The Only Right Choice Here)");
+                Console.WriteLine("Now, What Can I Do For You? \n1.Calculate\n2.Show History \n3.Exit (The Only Right Choice Here)");
 
                 int cmd = Console.Read();
 
@@ -41,6 +40,10 @@ namespace StackProject
 
                         string equation = Console.ReadLine();
 
+                        SolveEquation solveEquation = new SolveEquation();
+                        
+                        solveEquation.solve(equation);
+
                         break;
                     }
                     case '2':
@@ -50,18 +53,6 @@ namespace StackProject
                         break;
                     }
                     case '3':
-                    {
-                        
-                        
-                        break;
-                    }
-                    case '4':
-                    {
-                        
-                        
-                        break;
-                    }
-                    case '5':
                     {
                         exit = true;
 
@@ -81,18 +72,107 @@ namespace StackProject
     
     public class SolveEquation
     {
-        public void solve()
+        public void solve(string inFix)
         {
-            string inFix = default;
-            string firstNum = default;
-            string secNum = default;
             Queue<string> queue = inFixToPostFix(inFix);
-
-            for (int i = 0; i < queue.Capacity; i++)
+            Stack<string> stack = new Stack<string>();
+            
+            if (queue == null)
             {
-                if (queue.peek() == "+" || queue.peek() == "-" || queue.peek() == "*" || queue.peek() == "/" || queue.peek() == "^" ||
-                    queue.peek() == "s" || queue.peek() == "c" || queue.peek() == "T" || queue.peek() == "C" || queue.peek() == "L")
+                Console.WriteLine("Invalid Arguement!");
+                
+                return;
             }
+
+            while(true)
+            {
+                if (queue.Rear == -1 || queue.peek() == null)
+                {
+                    break;
+                }
+                
+                string current = queue.Dequeue();
+
+                if (current == "")
+                {
+                    continue;
+                }
+                else if ("+-*/^".Contains(current))
+                {
+                    double num2 = double.Parse(stack.pop());
+                    double num1 = double.Parse(stack.pop());
+                    stack.push(doubleOperator(char.Parse(current) , num1 , num2).ToString());
+                }
+                else if ("scTC".Contains(current))
+                {
+                    
+                    stack.push(singleOperator(char.Parse(current), double.Parse(stack.pop())).ToString());
+                }
+                else
+                {
+                    stack.push(current);
+                }
+            }
+
+            Console.WriteLine(stack.Array[0]);
+        }
+        
+        public Double singleOperator(char op , double num)
+        {
+            double answer = default;
+
+            switch (op)
+            {
+                case 's':
+                {
+                    return Math.Sin(num);
+                }
+                case 'c':
+                {
+                    return Math.Cos(num);
+                }
+                case 'T':
+                {
+                    return Math.Tan(num);
+                }
+                case 'C':
+                {
+                    return (Math.Cos(num)/Math.Sin(num));
+                }
+            }
+
+            return answer;
+        }
+        
+        public Double doubleOperator(char op , double num1 , double num2)
+        {
+            double answer = default;
+
+            switch (op)
+            {
+                case '+':
+                {
+                    return (num1 + num2);
+                }
+                case '-':
+                {
+                    return (num1 - num2);
+                }
+                case '*':
+                {
+                    return (num1 * num2);
+                }
+                case '/':
+                {
+                    return (num1 / num2);
+                }
+                case '^':
+                {
+                    return (Math.Pow(num1, num2));
+                }
+            }
+            
+            return answer;
         }
 
         public Queue<string> inFixToPostFix(string inFix)
@@ -105,17 +185,33 @@ namespace StackProject
             {
                 char currentChar = inFix[i];
                 
-                if ((currentChar <= '9' && currentChar >= '0') || currentChar == '.')
+                if ((currentChar <= '9' && currentChar >= '0') || currentChar == '.' || currentChar == 'p' || currentChar == 'e')
                 {
                     currentNum += currentChar;
                 }
                 else
                 {
-                    list.Add(currentNum);
+                    if (currentNum == "p")
+                    {
+                        currentNum = Math.PI.ToString();
+                    }
+                    if (currentNum == "e")
+                    {
+                        currentNum = Math.E.ToString();
+                    }
+                    if (currentNum != "")
+                    {
+                        list.Add(currentNum);
+                    }
                     currentNum = "";
                     
                     if (currentChar == '(')
                     {
+                        if (operators.peek() == '-')
+                        {
+                            list.Add("0");
+                        }
+                        
                         operators.push(currentChar);
                     }
                     else if (currentChar == ')')
@@ -127,7 +223,7 @@ namespace StackProject
                         
                         operators.pop();
                     }
-                    else
+                    else if ("+-*/^scTC".Contains(currentChar))
                     {
                         while (operators.Count >= 0 && getPrecedence(currentChar) <= getPrecedence(operators.peek()))
                         {
@@ -136,8 +232,24 @@ namespace StackProject
                     
                         operators.push(currentChar);
                     }
+                    else
+                    {
+                        return null;
+                    }
                 }
-                
+
+                if (inFix.Length - 1 == i)
+                {
+                    if (currentNum == "p")
+                    {
+                        currentNum = Math.PI.ToString();
+                    }
+                    if (currentNum == "e")
+                    {
+                        currentNum = Math.E.ToString();
+                    }
+                    list.Add(currentNum);
+                }
             }
 
             while (operators.Count >= 0)
@@ -150,7 +262,6 @@ namespace StackProject
             for (int i = 0; i < list.Count; i++)
             {
                 queue.Enqueue(list[i]);
-                Console.Write(list[i]);
             }
 
             return queue;
@@ -173,7 +284,7 @@ namespace StackProject
                 return 3;
             }
             
-            if (op == 's' || op == 'c' || op == 'T' || op == 'C' || op == 'l')
+            if (op == 's' || op == 'c' || op == 'T' || op == 'C')
             {
                 return 4;
             }
@@ -269,7 +380,7 @@ namespace StackProject
         {
             Capacity = capacity;
             Array = new T[Capacity];
-            Rear = 0;
+            Rear = -1;
         }
         
         //-------------------------------Functions-------------------------------
